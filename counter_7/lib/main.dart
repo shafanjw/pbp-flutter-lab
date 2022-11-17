@@ -1,3 +1,4 @@
+import 'package:counter_7/view/navbar.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -29,6 +30,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  String result = 'GENAP';
+  bool isShow = false;
 
   void _incrementCounter() {
     setState(() {
@@ -38,13 +41,46 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _decrementCounter() {
     setState(() {
-
-      if ((_counter + (-1))== -1) {
-        _counter= 0;
+      if ((_counter - 1) == -1) {
+        _counter = 0;
       } else {
         _counter--;
       }
     });
+  }
+
+  void _checkResult() {
+    setState(() {
+      if ((_counter % 2) == 0) {
+        result = 'GENAP';
+      } else {
+        result = 'GANJIL';
+      }
+    });
+  }
+
+  void _showButton() {
+    setState(() {
+      if (_counter == 0) {
+        isShow = false;
+      } else {
+        isShow = true;
+      }
+    });
+  }
+
+  Text showText() {
+    if (result == 'GANJIL') {
+      return Text(
+        result,
+        style: const TextStyle(color: Colors.blue),
+      );
+    } else {
+      return Text(
+        result,
+        style: const TextStyle(color: Colors.red),
+      );
+    }
   }
 
   @override
@@ -53,20 +89,12 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
+      drawer: const NavbarApp(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            if (_counter%2 == 0)
-              const Text(
-                'GENAP',
-                style: TextStyle(color: Colors.red,),
-              )
-            else if (_counter%2==1)
-                const Text(
-                  'GANJIL',
-                  style: TextStyle(color: Colors.blue,),
-              ),
+            showText(),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
@@ -74,36 +102,35 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-
       floatingActionButton: Padding(
-        // Buat button decrement dan increment
-        padding: const EdgeInsets.only(left: 32),
+        padding: const EdgeInsets.only(left: 30),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            // Check apakah counter sudah ada nilainya atau belum
-            if (_counter >=1) 
-              Padding(
-                padding: const EdgeInsets.all (49.0),
+            Visibility(
+                visible: isShow,
                 child: FloatingActionButton(
-                  onPressed: _decrementCounter,  
+                  onPressed: () {
+                    _decrementCounter();
+                    _checkResult();
+                    _showButton();
+                  },
                   tooltip: 'Decrement',
                   child: const Icon(Icons.remove),
-                ),
-              ),
-  
-              Padding(
-                padding: const EdgeInsets.all(49.0),
-                child: FloatingActionButton(
-                  onPressed: _incrementCounter,
-                  tooltip: 'Increment',
-                  child: const Icon(Icons.add),
-              ),
-            ),
+                )),
+            Expanded(child: Container()),
+            FloatingActionButton(
+              onPressed: () {
+                _incrementCounter();
+                _checkResult();
+                _showButton();
+              },
+              tooltip: 'Increment',
+              child: const Icon(Icons.add),
+            )
           ],
         ),
       ),
     );
   }
 }
-
