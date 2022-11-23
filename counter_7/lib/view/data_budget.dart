@@ -40,6 +40,7 @@ class _DataBudgetState extends State<DataBudget> {
                     color: Colors.black,
                   )),
             ),
+            
           );
         },
         itemCount: Budget.getList().length,
